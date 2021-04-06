@@ -1,34 +1,29 @@
-# Event Token
+# Event Token (ERC721)
 Sell tickets for events with blockchain today!
-
-- Contract address: [0xdab2f7975415401340df6f6ede457bd9122a6bd4](https://ropsten.etherscan.io/address/0xdab2f7975415401340df6f6ede457bd9122a6bd4)
-- Frontend repository [on Github](https://github.com/yurycooliq/eth-tickets)
+- React - Frontend repository [on Github](https://github.com/chulavege1/React_dapp_example)
+- VUE - Frontend repository [on Github](https://github.com/yurycooliq/eth-tickets)
 - [Live Demo](https://hungry-sammet-4eed59.netlify.app/)
+- [Live Demo](https://moonlit-city-309815.ew.r.appspot.com/#/crypto)
 
 Only **Ropsten testnet** available for now!
 
-## Project setup
-```
-npm install
+## 1. Project setup.
+npm install OR yarn
 ```
 
-### Copy ENV file and fill it
-```
+## 2. Change ETHEREUM_NODE_URL and ROPSTEN_WALLET_KEY in .env file.
 cp .env.example .env
 nano .env
 ```
-
-### Run tests
-```
-npm run test
-```
+## 3. Deploy to Ropsten network
+npm run migrate:ropsten
+## 4. Take you smart contract adress hash, and go setup client app react-web3 and connect to ropsten!
+######## ✋
+Other commands.
 
 ### Deploy to local net
-```
 npm run migrate
 ```
-
-### Deploy to Ropsten network
-```
-npm run migrate:ropsten
+## Run tests 
+npm run test 
 ```
