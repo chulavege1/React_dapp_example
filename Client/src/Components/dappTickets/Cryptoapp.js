@@ -20,7 +20,7 @@ const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000'
 /////////////////////////////////////////////////////////////
 /// ! Change this FACTORY key, if want connect to          //
 /// ! test-rpc ropsten - SMART CONTRACT ADRESS!            //
-const FACTORY = '0xD8fa4C622177cF93656804CEE5bAbC4D4ce72298'
+const FACTORY = '0x06b02CF48157557d2c3857A182f34694083aB2B9'
 /////////////////////////////////////////////////////////////
 //                            
 const CreateToken = props => {
