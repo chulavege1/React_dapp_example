@@ -10,7 +10,7 @@ Sell tickets for events with blockchain today!
 npm install OR yarn
 ```
 ## 2. if you need owner's rights.
-### Change in bottom file FACTORY and TICKET FACTORY adres to you ETH wallet.
+### Change in bottom file FACTORY and TICKET FACTORY adres to you ETH SMART CONTRACT ADRESS!.
 ```
 [Cryptoapp.js, createEvent.js, User.js] 
 ```
