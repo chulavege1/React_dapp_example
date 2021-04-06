@@ -14,7 +14,7 @@ module.exports = {
     ropsten: {
       provider: () => new HDWalletProvider(
         process.env.MNEMONIC,
-        `https://ropsten.infura.io/v3/b42ca6aa17b7460bbff8de90e888eaf7`,
+        process.env.ETHEREUM_NODE_URL,
         ),
       // websockets: true,
       network_id: 3, // Ropsten's id
