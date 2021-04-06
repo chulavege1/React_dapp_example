@@ -18,11 +18,13 @@ nano .env
 ```
 npm run migrate:ropsten
 ```
-## 4. Take you smart contract adress hash, and go setup client app react-web3 and connect to ropsten!
-######## ✋
+## 4. Take you smart contract adress hash, and go setup client app react-web3 and connect to ropsten! ✋
 Other commands.
 ### Deploy to local net
+```
 npm run migrate
+```
 ## Run tests 
+```
 npm run test 
 ```
