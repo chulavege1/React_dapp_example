@@ -1,8 +1,9 @@
-# Event Token (ERC721)
+# Event Token (ERC721).
+
 Sell tickets for events with blockchain today!
 - React - Frontend repository [on Github](https://github.com/chulavege1/React_dapp_example)
 - VUE - Frontend repository [on Github](https://github.com/yurycooliq/eth-tickets)
-- React [Live Demo](https://moonlit-city-309815.ew.r.appspot.com/#/crypto)
+- React [Live Beta_Release](https://moonlit-city-309815.ew.r.appspot.com/#/crypto)
 - Vue [Live Demo](https://hungry-sammet-4eed59.netlify.app/)
 
 Only **Ropsten testnet** available for now!
