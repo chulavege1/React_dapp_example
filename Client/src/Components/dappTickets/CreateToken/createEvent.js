@@ -16,7 +16,7 @@ const ticketFactory = require('~Abi/TicketFactory.json')
 /////////////////////////////////////////////////////////////
 // ! Owner checker. Type your hash (!!!SMART-CONTRACT-ADRESS!!!)
 const ticketFactoryContract = new web3.eth.Contract
-    ( ticketFactory.abi, '0x99CE04064b6555d562423465EeB1D35F574Bed12' )
+    ( ticketFactory.abi, '0x06b02CF48157557d2c3857A182f34694083aB2B9' )
 //                      ! Change this key, if want connect to          
 //                      ! test-rpc ropsten or mainnet             
 /////////////////////////////////////////////////////////////
