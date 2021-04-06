@@ -6,7 +6,8 @@ Sell tickets for events with blockchain today!
 - Vue [Live Demo](https://hungry-sammet-4eed59.netlify.app/)
 
 Only **Ropsten testnet** available for now!
-
+```
+```
 ## 1. Project setup.
 npm install OR yarn
 ```
