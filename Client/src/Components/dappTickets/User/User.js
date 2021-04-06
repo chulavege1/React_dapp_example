@@ -6,7 +6,7 @@ let web3 = new Web3(Web3.givenProvider || "https://ropsten.infura.io/v3/b42ca6aa
 const ticketFactory = require('~Abi/TicketFactory.json')
 const ticketFactoryContract = new web3.eth.Contract(
   ticketFactory.abi,
-  '0x99CE04064b6555d562423465EeB1D35F574Bed12'
+  '0x06b02CF48157557d2c3857A182f34694083aB2B9'
 )
 //
 const User = () => {
