@@ -10,10 +10,11 @@ Only **Ropsten testnet** available for now!
 ## 1. Project setup.
 npm install OR yarn
 ```
-
+```
 ## 2. Change ETHEREUM_NODE_URL and ROPSTEN_WALLET_KEY in .env file.
 cp .env.example .env
 nano .env
+```
 ```
 ## 3. Deploy to Ropsten network
 npm run migrate:ropsten
