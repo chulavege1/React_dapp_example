@@ -1,0 +1,30 @@
+{
+  "name": "event-token",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "test": "truffle test",
+    "build": "truffle build",
+    "import": "truffle-flattener ./contracts/Import.sol > ./contracts/Dependencies.sol",
+    "make-single-file": "truffle-flattener ./contracts/TicketFactory.sol > ./flattened/TicketFactory.sol",
+    "migrate": "truffle migrate",
+    "migrate:ropsten": "truffle migrate --network ropsten",
+    "migrate:mainnet": "truffle migrate --network mainnet",
+    "migrate:reset": "truffle migrate --reset",
+    "migrate:reset-ropsten": "truffle migrate --reset --network ropsten",
+    "migrate:reset-mainnet": "truffle migrate --reset --network mainnet"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.3.0",
+    "dotenv": "^8.2.0",
+    "fs-extra": "^9.1.0",
+    "pify": "^5.0.0",
+    "truffle-flattener": "^1.5.0",
+    "web3": "^1.3.1"
+  },
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.2.1",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1"
+  }
+}

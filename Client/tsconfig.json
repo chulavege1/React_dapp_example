@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist/js",
+      "sourceMap": true,
+      "noImplicitAny": true,
+      "module": "es6",
+      "jsx": "react",
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "skipLibCheck": true,
+      "target": "es6",
+      "allowJs": true
+    },
+    "include": ["./src/Root/index.js"]
+  }

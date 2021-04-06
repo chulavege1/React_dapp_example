@@ -1,0 +1,21 @@
+.ThemeChange
+    position: absolute
+    bottom: 23px
+    left: 0px
+    height: 30px
+    width: 24px
+    z-index: 20
+    transition: all 1s ease
+    transform: rotate(46deg)
+        // animation: pulse 1.5s
+    // @keyframes pulse 
+    //     0%  
+    //         box-shadow: 0 0 0 0px #000, inset 0 0 0 15px #fff 
+    &:hover svg 
+        transition: all 1s ease 
+        transform: scale(3) 
+        transform: rotate(30deg)
+    &:not(:hover) svg 
+        transition: all 1s ease 
+        transform: scale(1.0)
+    
