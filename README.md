@@ -1,5 +1,5 @@
 
-# Check this two routes readme!
+# Check setup process in this two route folders 👷 .
 ```
 React Solidity project exmaple
 ```
