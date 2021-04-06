@@ -16,7 +16,8 @@ npm install OR yarn
 cp .env.example .env
 nano .env
 ```
-## 3. Deploy to Ropsten network
+## 2. Check truffle-config.js file! 🧐
+## 3. Deploy to Ropsten network 
 ```
 npm run migrate:ropsten
 ```
