@@ -4,10 +4,12 @@ import styled from 'styled-components'
 import Web3 from 'web3';
 let web3 = new Web3(Web3.givenProvider || "https://ropsten.infura.io/v3/b42ca6aa17b7460bbff8de90e888eaf7");
 const ticketFactory = require('~Abi/TicketFactory.json')
+const ticketOffice = require('~Abi/TicketOffice.json')
 const ticketFactoryContract = new web3.eth.Contract(
   ticketFactory.abi,
-  '0x99CE04064b6555d562423465EeB1D35F574Bed12'
+  '0x06b02CF48157557d2c3857A182f34694083aB2B9'
 )
+import moment from 'moment'
 //
 const User = () => {
 // Initial state for user.
@@ -21,6 +23,10 @@ const [userInit, setUserInit] = useState({
 })
 // Event state.
 const [Event, setEvent] = useState([])
+// UseEffect.
+useEffect(() => {
+    getEvents()
+    }, [])
 // Get all events.
     const getEvents = async () => {
         const eventsCount = await ticketFactoryContract.methods.countEvents().call()
@@ -30,27 +36,57 @@ const [Event, setEvent] = useState([])
             setEvent(events => [...events, event])
           }
       }
-//  Effects
-      useEffect(() => {
-        getEvents()
-      }, [])
-      console.log(Event)
 // return User ivents cards.
+// return User ivents cards + buy this cards.
 const renderObject = () => {
     return Object.entries(Event).map(([key, value], i) => {
-        return (
-            <UL key={key}>
-                <ListTheme>
-                    <ListItem>
-                        <IMGsIzer><IMG src={value.[3]}></IMG></IMGsIzer>
-                    </ListItem>
-                    <ListItem><p>{value.[1]}</p></ListItem>
-                    <ListItem><p>{value.[2]}</p></ListItem>
-                    <ListItem><p>Start at - {value.[6]}</p></ListItem>
-                    <ListItem><p>Duration - {value.[7]}</p></ListItem>
-                    <ListItem><p>Tickets left - {value.maxTickets}</p></ListItem>
-                </ListTheme>
-            </UL>
+        // Buy ticket.
+        const buyTicket = async () => {
+        const user = await web3.eth.getAccounts()
+
+            const ticketOfficeContract = new web3.eth.Contract(
+                ticketOffice.abi,
+                value.[0]
+            )
+            ticketOfficeContract.methods.mint().send({
+                from: user.[0],
+                value: value.[5]
+            })
+            .on('transactionHash', function (hash) {
+                console.log('setTransactionText', 'Watch your transaction on Etherscan.io')
+                console.log('setTransactionUrl', 'https://ropsten.etherscan.io/tx/' + hash)
+                console.log('setTransaction', true)
+            })
+        }
+//////////////////////// Get user purchased tickets.
+    const getMyTickets = async () => {
+        const user = await web3.eth.getAccounts()
+        const ticketOfficeContract = new web3.eth.Contract(
+            ticketOffice.abi, value.[0]
+        )
+        return await ticketOfficeContract.methods.balanceOf(user.[0]).call()
+    }
+    getMyTickets()
+//////////////////////// 
+return (
+    <UL key={key}>
+        <ListTheme>
+            <IMG src={value.[3]}></IMG>
+            {/* <ListItem><button onClick={getMyTickets}>Get tickets</button></ListItem> */}
+            <div>
+                <ListItem><P>Title - {value.[1]}</P></ListItem>
+                <ListItem><P>Description -{value.[2]}</P></ListItem>   
+                <ListItem><P>Start at - {moment(parseInt(value[6])).format('[Start at] MMMM Do [at] h:mm a')}</P></ListItem>
+                <ListItem><P>{moment.utc(value[7] * 1000).format('[Duration] HH:mm')}</P></ListItem>
+                <ListItem><P>Tickets left - {value.maxTickets}</P></ListItem>
+            </div>
+            <LastListItem>
+                <Button onClick={buyTicket}>
+                    {web3.utils.fromWei(value.[5], 'ether')}Ξ ETH
+                </Button> {/* Buy ticket */}
+            </LastListItem>
+        </ListTheme>
+    </UL>
         )
     })
 }
@@ -62,17 +98,23 @@ const renderObject = () => {
     )
 }
 // Container
-const Container = styled.div `color: #000;
-    display: grid;`
+const Container = styled.div `
+display: flex; flex-wrap: wrap; justify-content: space-around;`
     // UL
 const UL      = styled.ul  `margin: 0; padding: 0;`
         // List style
-const ListTheme = styled.div `background: rgba(0, 0, 50, 0.4); margin: 40px 0; width: 100%;`
+const ListTheme = styled.div `background: rgba(0, 0, 0, 0.5); border-radius: 10px;
+position: relative; max-width: 600px; height: 440px; width: 100%; min-width: 320px;
+display: flex; flex-direction: column; align-items: center;
+justify-content: center; border: 4px solid #fff;`
             // Elements token
-const ListItem  = styled.li `list-style: none; display: flex; justify-content: center; `
+const ListItem  = styled.li `list-style: none; position: relative;`
+const LastListItem = styled.li `list-style: none; position: absolute; bottom: 0; right: 0;`
 // IMG
-const IMGsIzer = styled.div`width: 500px; height: 500px; 
-    display: flex; justify-content: center; alig-items: center;`
-const IMG = styled.img`height: 100%; width: 100%;`
+const P = styled.p ` text-align: left; 
+    color: #fff; font-weight: 700; background: rgba(0,0,0,0.5);
+    padding: 4px;`
+const IMG = styled.img`position: absolute; height: 100%; width: 100%;`
+const Button = styled.button `font-size: 22px; color: #000; background: #fff; padding: 4px;`
 
 export default User

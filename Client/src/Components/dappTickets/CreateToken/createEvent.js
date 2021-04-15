@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import './style/base.scss'
 import { FormControl, TextField, Button, Tooltip } from '@material-ui/core';
 // Route
 import { BrowserRouter as Router, useRouteMatch } from "react-router-dom";
@@ -16,16 +15,20 @@ const ticketFactory = require('~Abi/TicketFactory.json')
 /////////////////////////////////////////////////////////////
 // ! Owner checker. Type your hash (!!!SMART-CONTRACT-ADRESS!!!)
 const ticketFactoryContract = new web3.eth.Contract
-    ( ticketFactory.abi, '0x99CE04064b6555d562423465EeB1D35F574Bed12' )
+    ( ticketFactory.abi, '0x06b02CF48157557d2c3857A182f34694083aB2B9' )
 //                      ! Change this key, if want connect to          
 //                      ! test-rpc ropsten or mainnet             
 /////////////////////////////////////////////////////////////
 // Styles 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiFormControl-root': {
+            margin: theme.spacing(1),
+            width: 400,
+          }
+    },
     textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: 200,
+        width: 800,
     },
     }));
     ////////////////////////////////////////////////////////////////
@@ -39,17 +42,21 @@ const CreateEventBar = (time) => {
         ({
             title: '',
             description: '',
-            imageUrl: 'http://mmosmile.ru/uploads/posts/2015-06/1433971484_1242980326_a59832974feb.jpg',
+            imageUrl: '',
             date: moment().unix(),
             duration: 3600, // 1hour
-            ticketCost: 3, // 0.1 ether
+            ticketCost: 1e17, // 0.1 ether
             maxTickets: 999,
             dialog: false,
             symbol: defaultSymbol,
             timeRule: [v => v.match(timeRegExp) != null || 'Invalid time!'],
             maxTicketsRule: [v => v > 0 || 'Invalid amount!']
         })
-////////////////////////////////
+    useEffect(() => {
+        EventData.ticketCost = web3.utils.toWei(EventData.ticketCost.toString()),
+        EventData.date = moment().unix()
+    }, );
+////
 //     Data inputs saver.     
     const handleChanger = e => {
         const { name, value } = e.target;
@@ -58,7 +65,21 @@ const CreateEventBar = (time) => {
             [name]: value
         }));
     };
-////////////////////////////////
+    const date = async () => {
+        return EventData.date = moment(EventData.date * 1000).toISOString().substr(0, 10)
+    }
+    // const duration = async (time) => {
+    //     return EventData.duration = moment.utc(EventData.duration * 1000).format('H:mm')
+    // }
+    const ticketCost = async () => {
+        return (
+            EventData.ticketCost = web3.utils.fromWei(EventData.ticketCost.toString(), 'ether')
+        )
+    }
+    // duration()
+    ticketCost()
+    date()
+////
 // Click = Save all given inputs data & create transaction.
     const createEvent = async () => {
         let { title, description, imageUrl, symbol, ticketCost, date, duration, maxTickets } = EventData;
@@ -75,11 +96,10 @@ const CreateEventBar = (time) => {
     // Components view UI.
     return (
         <Container>
-            <FormControl
-                onSubmit={createEvent}>
+            <FormControl className={classes.root} onSubmit={createEvent}>
                 <div style={{display: 'flex', gridGap: '10px'}}>
                     <Flex>
-                        <TextFieldM
+                        <TextFieldM 
                             label="Title"
                             variant="outlined"
                             value={EventData.title}
@@ -96,7 +116,7 @@ const CreateEventBar = (time) => {
                             name='description'
                         />
                         <Tooltip title='Example - https://someWebsiteUrl.jpg' arrow>
-                            <TextFieldM
+                            <TextFieldM 
                                 label="Image URL"
                                 variant="outlined"
                                 value={EventData.imageUrl}
@@ -112,7 +132,7 @@ const CreateEventBar = (time) => {
                             onChange={handleChanger}
                             name='maxTickets'
                         />
-                        <TextFieldM 
+                        <TextFieldM
                             label="Ticket cost"
                             variant="outlined"
                             value={EventData.ticketCost}
@@ -144,6 +164,7 @@ const CreateEventBar = (time) => {
                             type='text'
                             onChange={handleChanger}
                             name='duration'
+                            pattern={EventData.timeRule}
                         />
                         <Button variant="contained" color="primary" onClick={createEvent} type='submit'>Create</Button>
                         <Button variant="contained" color="primary" onClick={createEvent} type='submit'>Create</Button>
