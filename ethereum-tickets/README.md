@@ -21,6 +21,10 @@ nano .env
 ```
 npm run migrate:ropsten
 ```
+## 3. Copy to you client ABI folder this files.
+```
+./build/TicketFactory.json + ./build/TicketOffice.json
+```
 ## 4. Take you smart contract adress hash, and go setup client app react-web3 and connect to ropsten! ✋
 [react-web3 on Github](https://github.com/chulavege1/React_dapp_example)
 ## Other commands.
