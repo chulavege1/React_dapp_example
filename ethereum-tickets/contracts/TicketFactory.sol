@@ -44,7 +44,7 @@ contract TicketFactory {
         _;
     }
 
-    function addEvent(
+    function setEventData(
         string memory _eventName,
         string memory _eventDescription,
         string memory _eventPosterURI,
@@ -81,3 +81,6 @@ contract TicketFactory {
         return eventsList.length;
     }
 }
+
+
+
