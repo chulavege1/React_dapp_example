@@ -64,6 +64,10 @@ contract TicketOffice is ERC721 {
         _;
     }
 
+    function setTicketPrice (uint _newPrice) public onlyOwner {
+        ticketPrice = _newPrice;
+    }
+
     function mint () public payable checkBalance notSold {
         // Get mintable ID
         _tokenIds.increment();
