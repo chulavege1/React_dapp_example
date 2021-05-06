@@ -1,0 +1,107 @@
+TicketFactory.sol
+
+    if (block.timestamp < _startAt && _eventDuration != 0) {
+            eventsList.push(newEvent);
+        }
+
+    function setTicketPrice (uint _newPrice) public onlyOwner {
+        ticketPrice = _newPrice;
+    }
+
+    function changeOwner (address payable _newOwner) public onlyOwner {
+        owner = _newOwner;
+    }
+//
+
+event-token.test.js
+
+const { assert } = require('chai')
+const Web3 = require('web3')
+
+const TicketFactory = artifacts.require('./TicketFactory.sol')
+
+
+require('chai').use(require('chai-as-promised')).should()
+
+contract("TicketFactory", (accounts) => {
+  const owner = accounts[0]
+  const visitor1 = accounts[1]
+
+  let contract
+
+  beforeEach('should setup the contract instance', async () => {
+    contract = await TicketFactory.deployed()
+  });
+
+  describe('Check owner usage rights', async () => {
+    const eventName = 'Test Event!'
+    const eventDescription = 'descr'
+    const eventPosterURI = ''
+    const ticketSymbol = 'TICKET'
+    const ticketPrice = '1'
+    const futureUnixDate = '1939817829' // 2031year
+    const oldUnixDate = '1169818642' // 2007year
+    const eventDuration = '3600'
+    const maxTickets = '999'
+
+    it('Owner can create events', async () => {
+      await contract.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
+        ticketPrice, futureUnixDate, eventDuration, maxTickets, {
+          from: owner,
+        } )
+      const newEvent = await contract.eventsList(0)
+      assert.equal(eventName, newEvent.eventName, `New event correct`) 
+    })
+
+    it('If Unix Date(2021year) & Ticket start(2007) - owner cant create event', async () => {
+      try {
+        await contract.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
+          ticketPrice, oldUnixDate, eventDuration, maxTickets, {
+            from: owner,
+          } )
+      } catch (e) {
+        assert.equal(e, e)
+      }
+    })
+
+    it('Owner can add member', async () => {
+      await contract.changeOwner(visitor1)
+    })
+
+    it('Owner cant add member undefined users', async () => {
+      try {
+        await contract.changeOwner(accounts[10])
+      } catch (e) {
+        assert.equal(e, e)
+      }
+    })
+
+    describe('User usage', async () => {
+
+      it('Not owner can`t create event', async () => {
+        try {
+          await contract.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
+            ticketPrice, futureUnixDate, eventDuration, maxTickets, {
+            from: visitor1
+          })
+        } catch (e) {
+          assert.equal(e, e)
+        }
+      })
+
+      it('User can see token', async () => {
+        const event = await contract.eventsList(0, {
+          from: visitor1
+        })
+        assert.equal(eventName, event.eventName, `Event name visible for the people.`)
+      })
+  
+    })
+  
+  })
+
+})
+
+
+
+
