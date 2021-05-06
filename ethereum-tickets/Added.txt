@@ -1,15 +1,5 @@
 TicketFactory.sol
 
-mapping (address => bool) members;
-
-modifier onlyBy(address _account) {
-        require(
-            msg.sender == _account,
-            "Sender not authorized."
-        );
-        _;
-    }
-
     if (block.timestamp < _startAt && _eventDuration != 0) {
             eventsList.push(newEvent);
         }
@@ -18,7 +8,7 @@ modifier onlyBy(address _account) {
         ticketPrice = _newPrice;
     }
 
-    function changeOwner (address payable _newOwner) public onlyBy(owner) {
+    function changeOwner (address payable _newOwner) public onlyOwner {
         owner = _newOwner;
     }
 //
