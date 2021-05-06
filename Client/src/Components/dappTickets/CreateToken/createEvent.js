@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { FormControl, TextField, Button, Tooltip } from '@material-ui/core';
+import { FormControl, TextField, Button, Tooltip } from '@material-ui/core'
 // Route
-import { BrowserRouter as Router, useRouteMatch } from "react-router-dom";
+import { BrowserRouter as Router, useRouteMatch } from "react-router-dom"
 const TextFieldM = styled(TextField)`margin: 10px;`
     // Style materialUi \\
 import { makeStyles } from '@material-ui/core/styles'
     // Nubmer helper. \\
 import moment, { duration } from 'moment'
     // WEB3. \\
-import Web3 from 'web3';
-let web3 = new Web3(Web3.givenProvider || "https://ropsten.infura.io/v3/b42ca6aa17b7460bbff8de90e888eaf7");
+import Web3 from 'web3'
+let web3 = new Web3(Web3.givenProvider || "https://ropsten.infura.io/v3/b42ca6aa17b7460bbff8de90e888eaf7")
 const ticketFactory = require('~Abi/TicketFactory.json')
 /////////////////////////////////////////////////////////////
 // ! Owner checker. Type your hash (!!!SMART-CONTRACT-ADRESS!!!)
 const ticketFactoryContract = new web3.eth.Contract
-    ( ticketFactory.abi, '0x06b02CF48157557d2c3857A182f34694083aB2B9' )
+    ( ticketFactory.abi, '0xCDf544e0767eC4C17fd00fC03DfBCe76DF74b657' )
 //                      ! Change this key, if want connect to          
 //                      ! test-rpc ropsten or mainnet             
 /////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     textField: {
         width: 800,
     },
-    }));
+}));
     ////////////////////////////////////////////////////////////////
 ////////////// Event data token creator. \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 const CreateEventBar = (time) => {
@@ -38,7 +38,7 @@ const CreateEventBar = (time) => {
     const timeRegExp = new RegExp(/^([0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/)
     const defaultSymbol = 'TICKET'
     // Component state & Date.
-    const [EventData, setEventData] = useState
+    const [EventData, addEvent] = useState
         ({
             title: '',
             description: '',
@@ -60,7 +60,7 @@ const CreateEventBar = (time) => {
 //     Data inputs saver.     
     const handleChanger = e => {
         const { name, value } = e.target;
-        setEventData(prevState => ({
+        addEvent(prevState => ({
             ...prevState,
             [name]: value
         }));
@@ -84,15 +84,14 @@ const CreateEventBar = (time) => {
     const createEvent = async () => {
         let { title, description, imageUrl, symbol, ticketCost, date, duration, maxTickets } = EventData;
         console.log(title, description, imageUrl, symbol, ticketCost, date, duration, maxTickets)
-        const accounts = await window.ethereum.enable();
-        const account = accounts[0];
+        const accounts = await window.ethereum.enable()
+        const account = accounts[0]
         const result = await ticketFactoryContract.methods
-            .setEventData(title, description, imageUrl, symbol, 
+            .addEvent(title, description, imageUrl, symbol,
                         ticketCost, date, duration, maxTickets)
             .send({ from: account })
         console.log(result)
-      }
-      
+    }
     // Components view UI.
     return (
         <Container>
@@ -158,7 +157,7 @@ const CreateEventBar = (time) => {
                                 shrink: true,
                             }}
                         />
-                        <TextFieldM 
+                        <TextFieldM
                             label="Duration"
                             value={EventData.duration}
                             type='text'

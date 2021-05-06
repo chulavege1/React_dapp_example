@@ -7,7 +7,7 @@ module.exports = {
   networks: {
     development: {
       host: process.env.TRUFFLE_HOST || '127.0.0.1', // Localhost (default: none)
-      port: process.env.TRUFFLE_PORT || 7545, // Standard Ethereum port (default: none)
+      port: process.env.TRUFFLE_PORT || 9545, // Standard Ethereum port (default: none)
       network_id: process.env.TRUFFLE_NETWORK_ID || '*' // Any network (default: none)
     },
     
@@ -18,6 +18,7 @@ module.exports = {
         ),
       // websockets: true,
       network_id: 3, // Ropsten's id
+      chainId : 3,
       gas: 7000000, // Ropsten has a lower block limit than mainnet
       //confirmations: 1, // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 50000, // # of blocks before a deployment times out  (minimum/default: 50)

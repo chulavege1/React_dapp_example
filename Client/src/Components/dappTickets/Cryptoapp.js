@@ -13,13 +13,13 @@ import {
   } from "react-router-dom"
 // Web 3, Abis
 import { abi } from '~Abi/TicketFactory.json'
-import Web3 from 'web3';
+import Web3 from 'web3'
 let web3 = new Web3(Web3.givenProvider || "wss://ropsten.infura.io/ws/v3/b42ca6aa17b7460bbff8de90e888eaf7")
 const DEFAULT_ADDRESS = '0x0000000000000000000000000000000000000000'
 /////////////////////////////////////////////////////////////
 /// ! Change this FACTORY key, if want connect to          //
 /// ! test-rpc ropsten - SMART CONTRACT ADRESS!            //
-const FACTORY = '0x06b02CF48157557d2c3857A182f34694083aB2B9'
+const FACTORY = '0xCDf544e0767eC4C17fd00fC03DfBCe76DF74b657'
 /////////////////////////////////////////////////////////////
 // Main fucntion.
 const CreateToken = props => {
@@ -42,7 +42,7 @@ const CreateToken = props => {
     const connect = async () => {
         if (Object.prototype.hasOwnProperty.call(window, 'ethereum')) {
             await window.ethereum.enable()
-            setAuthenticated(true)
+                setAuthenticated(true)
         }
     }
 // Side effects.
@@ -60,7 +60,7 @@ const CreateToken = props => {
         <Container>
             <Router>
             { owner ? <Link to='/addivent'>Create Ivent</Link> : <h1>Hi user :)</h1> }
-            <Link style={{color: '#000', marginLeft: '30px'}} to='/'>Back</Link> 
+            <Link style={{color: '#000', marginLeft: '30px'}} to='/'>Back</Link>
                 <Switch>
                     <Route exact path="/"><User /></Route>
                     <Route path="/addivent"><CreateEvent /></Route>

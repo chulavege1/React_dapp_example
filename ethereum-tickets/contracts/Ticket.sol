@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.2 <0.7.0;
+pragma solidity >=0.6.2 <0.8.0;
 
 import "./Dependencies.sol";
 
@@ -63,12 +63,27 @@ contract TicketOffice is ERC721 {
         require(!sold, "Tickets sold");
         _;
     }
-
-    function setTicketPrice(uint _newPrice) public onlyOwner {
-        ticketPrice = _newPrice;
+    
+    modifier onlyBy(address _account) {
+        require(
+            msg.sender == _account,
+            "Sender not authorized."
+        );
+        // Do not forget the "_;"! It will
+        // be replaced by the actual function
+        // body when the modifier is used.
+        _;
     }
 
-    function mint() public payable checkBalance notSold {
+    function setTicketPrice (uint _newPrice) public onlyOwner {
+        ticketPrice = _newPrice;
+    }
+    
+    function changeOwner (address payable _newOwner) public onlyBy(owner) {
+        owner = _newOwner;
+    }
+
+    function mint () public payable checkBalance notSold {
         // Get mintable ID
         _tokenIds.increment();
         uint tokenID = _tokenIds.current();
@@ -83,7 +98,8 @@ contract TicketOffice is ERC721 {
         emit NewTicket(tokenID, msg.sender);
         if (tokenID == maxTickets) {
             sold = true;
-            emit TicketsSold(now, maxTickets);
+            emit TicketsSold(block.timestamp, maxTickets);
         }
     }
+    
 }

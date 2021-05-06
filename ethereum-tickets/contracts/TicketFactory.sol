@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.2 <0.7.0;
+pragma solidity >=0.6.2 <0.8.0;
+
 
 import "./Dependencies.sol";
 import "./Ticket.sol";
@@ -29,6 +30,7 @@ contract TicketFactory {
 
     PublicEvent[] public eventsList;
     mapping (uint => TicketOffice) public ticketOffices;
+    mapping (address => bool) members;
 
     constructor() public {
         owner = msg.sender;
@@ -43,8 +45,19 @@ contract TicketFactory {
         require(eventsList[_eventID].isExists, "Event not found");
         _;
     }
+    
+    modifier onlyBy(address _account) {
+        require(
+            msg.sender == _account,
+            "Sender not authorized."
+        );
+        // Do not forget the "_;"! It will
+        // be replaced by the actual function
+        // body when the modifier is used.
+        _;
+    }
 
-    function setEventData(
+    function addEvent(
         string memory _eventName,
         string memory _eventDescription,
         string memory _eventPosterURI,
@@ -72,14 +85,22 @@ contract TicketFactory {
             _maxTickets,
             true
         );
-        eventsList.push(newEvent);
+        if (block.timestamp < _startAt && _eventDuration != 0) {
+            eventsList.push(newEvent);
+        }
         emit EventCreated(eventID, _eventName);
         _eventsIds.increment();
+    }
+
+    function changeOwner(address payable _newOwner) public onlyBy(owner) {
+        owner = _newOwner;
     }
 
     function countEvents() public view returns (uint) {
         return eventsList.length;
     }
+
+
 }
 
 

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 // Web3
-import Web3 from 'web3';
-let web3 = new Web3(Web3.givenProvider || "https://ropsten.infura.io/v3/b42ca6aa17b7460bbff8de90e888eaf7");
+import Web3 from 'web3'
+let web3 = new Web3(Web3.givenProvider || "https://ropsten.infura.io/v3/b42ca6aa17b7460bbff8de90e888eaf7")
 const ticketFactory = require('~Abi/TicketFactory.json')
 const ticketOffice = require('~Abi/TicketOffice.json')
 const ticketFactoryContract = new web3.eth.Contract(
   ticketFactory.abi,
-  '0x06b02CF48157557d2c3857A182f34694083aB2B9'
+  '0xCDf544e0767eC4C17fd00fC03DfBCe76DF74b657'
 )
 import moment from 'moment'
 //
@@ -23,6 +23,7 @@ const [userInit, setUserInit] = useState({
 })
 // Event state.
 const [Event, setEvent] = useState([])
+console.log(Event)
 // UseEffect.
 useEffect(() => {
     getEvents()
@@ -36,13 +37,13 @@ useEffect(() => {
             setEvent(events => [...events, event])
           }
       }
-// return User ivents cards.
 // return User ivents cards + buy this cards.
 const renderObject = () => {
     return Object.entries(Event).map(([key, value], i) => {
         // Buy ticket.
         const buyTicket = async () => {
-        const user = await web3.eth.getAccounts()
+            
+            const user = await web3.eth.getAccounts()
 
             const ticketOfficeContract = new web3.eth.Contract(
                 ticketOffice.abi,
@@ -58,24 +59,44 @@ const renderObject = () => {
                 console.log('setTransaction', true)
             })
         }
+        const sendTicket = async () => {
+            const user = await web3.eth.getAccounts()
+            const ticketOfficeContract = new web3.eth.Contract(
+                ticketOffice.abi,
+                value.[0],
+            )
+            ticketOfficeContract.methods.safeTransferFrom('0x9906903e3Ce4aE0C4317aE2530a47575944b0A20', '0x2aFff045817546868Ae8E4Bda427d2fb90Ec7632', '2')
+            .send({ from: user.[0] })
+        }
+
 //////////////////////// Get user purchased tickets.
     const getMyTickets = async () => {
         const user = await web3.eth.getAccounts()
         const ticketOfficeContract = new web3.eth.Contract(
             ticketOffice.abi, value.[0]
         )
-        return await ticketOfficeContract.methods.balanceOf(user.[0]).call()
+        return await console.log(ticketOfficeContract.methods.balanceOf(user.[0]).call())
     }
-    getMyTickets()
+    console.log(getMyTickets())
+    const changeOwnerr = async () => {
+        const accounts = await window.ethereum.enable()
+        const account = accounts[0]
+        const result = await ticketFactoryContract.methods
+            .changeOwner('0x2aFff045817546868Ae8E4Bda427d2fb90Ec7632')
+            .send({ from: account })
+        console.log(result)
+    }
 //////////////////////// 
 return (
     <UL key={key}>
         <ListTheme>
             <IMG src={value.[3]}></IMG>
-            {/* <ListItem><button onClick={getMyTickets}>Get tickets</button></ListItem> */}
+            <ListItem><button onClick={sendTicket}>sendTicket sendTicket</button></ListItem>
+            <ListItem><button onClick={getMyTickets}>Get tickets</button></ListItem>
+            <ListItem><button onClick={changeOwnerr}>changeOwnerr</button></ListItem>
             <div>
                 <ListItem><P>Title - {value.[1]}</P></ListItem>
-                <ListItem><P>Description -{value.[2]}</P></ListItem>   
+                <ListItem><P>Description -{value.[2]}</P></ListItem>
                 <ListItem><P>Start at - {moment(parseInt(value[6])).format('[Start at] MMMM Do [at] h:mm a')}</P></ListItem>
                 <ListItem><P>{moment.utc(value[7] * 1000).format('[Duration] HH:mm')}</P></ListItem>
                 <ListItem><P>Tickets left - {value.maxTickets}</P></ListItem>
@@ -101,7 +122,7 @@ return (
 const Container = styled.div `
 display: flex; flex-wrap: wrap; justify-content: space-around;`
     // UL
-const UL      = styled.ul  `margin: 0; padding: 0;`
+const UL      = styled.ul `margin: 0; padding: 0;`
         // List style
 const ListTheme = styled.div `background: rgba(0, 0, 0, 0.5); border-radius: 10px;
 position: relative; max-width: 600px; height: 440px; width: 100%; min-width: 320px;
@@ -114,7 +135,7 @@ const LastListItem = styled.li `list-style: none; position: absolute; bottom: 0;
 const P = styled.p ` text-align: left; 
     color: #fff; font-weight: 700; background: rgba(0,0,0,0.5);
     padding: 4px;`
-const IMG = styled.img`position: absolute; height: 100%; width: 100%;`
+const IMG = styled.img `position: absolute; height: 100%; width: 100%;`
 const Button = styled.button `font-size: 22px; color: #000; background: #fff; padding: 4px;`
 
 export default User
