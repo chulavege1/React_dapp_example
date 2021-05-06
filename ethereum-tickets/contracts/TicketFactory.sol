@@ -45,17 +45,6 @@ contract TicketFactory {
         require(eventsList[_eventID].isExists, "Event not found");
         _;
     }
-    
-    modifier onlyBy(address _account) {
-        require(
-            msg.sender == _account,
-            "Sender not authorized."
-        );
-        // Do not forget the "_;"! It will
-        // be replaced by the actual function
-        // body when the modifier is used.
-        _;
-    }
 
     function addEvent(
         string memory _eventName,
@@ -92,7 +81,7 @@ contract TicketFactory {
         _eventsIds.increment();
     }
 
-    function changeOwner(address payable _newOwner) public onlyBy(owner) {
+    function changeOwner(address payable _newOwner) public onlyOwner {
         owner = _newOwner;
     }
 

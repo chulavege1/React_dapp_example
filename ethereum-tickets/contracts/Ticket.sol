@@ -63,25 +63,6 @@ contract TicketOffice is ERC721 {
         require(!sold, "Tickets sold");
         _;
     }
-    
-    modifier onlyBy(address _account) {
-        require(
-            msg.sender == _account,
-            "Sender not authorized."
-        );
-        // Do not forget the "_;"! It will
-        // be replaced by the actual function
-        // body when the modifier is used.
-        _;
-    }
-
-    function setTicketPrice (uint _newPrice) public onlyOwner {
-        ticketPrice = _newPrice;
-    }
-    
-    function changeOwner (address payable _newOwner) public onlyBy(owner) {
-        owner = _newOwner;
-    }
 
     function mint () public payable checkBalance notSold {
         // Get mintable ID
