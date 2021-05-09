@@ -54,6 +54,11 @@ contract TicketOffice is ERC721 {
         _;
     }
 
+    modifier onlyFactory() {
+        require(msg.sender == factory, "You need to use the factory");
+        _;
+    }
+
     modifier checkBalance() {
         require(msg.value == ticketPrice, "Wrong value");
         _;
@@ -62,6 +67,10 @@ contract TicketOffice is ERC721 {
     modifier notSold() {
         require(!sold, "Tickets sold");
         _;
+    }
+
+    function setTicketPrice (uint _newPrice) public onlyFactory {
+        ticketPrice = _newPrice;
     }
 
     function mint () public payable checkBalance notSold {

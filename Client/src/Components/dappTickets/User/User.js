@@ -7,7 +7,7 @@ const ticketFactory = require('~Abi/TicketFactory.json')
 const ticketOffice = require('~Abi/TicketOffice.json')
 const ticketFactoryContract = new web3.eth.Contract(
   ticketFactory.abi,
-  '0xCDf544e0767eC4C17fd00fC03DfBCe76DF74b657'
+  '0x9Ea4689298B2c8A74554dB974254BcE70D2061D5'
 )
 import moment from 'moment'
 //

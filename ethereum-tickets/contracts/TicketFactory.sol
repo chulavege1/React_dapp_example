@@ -15,7 +15,7 @@ contract TicketFactory {
 
     address payable public owner;
 
-    struct PublicEvent {
+    struct PublicEvent {    
         address eventAddress;
         string eventName;
         string eventDescription;
@@ -74,9 +74,8 @@ contract TicketFactory {
             _maxTickets,
             true
         );
-        if (block.timestamp < _startAt && _eventDuration != 0) {
-            eventsList.push(newEvent);
-        }
+        require (block.timestamp < _startAt && _eventDuration != 0, 'Must EventDuration < 0 && StartAt > unixData');
+        eventsList.push(newEvent);
         emit EventCreated(eventID, _eventName);
         _eventsIds.increment();
     }
@@ -88,7 +87,20 @@ contract TicketFactory {
     function countEvents() public view returns (uint) {
         return eventsList.length;
     }
-
+    // Get ticket methods.
+    TicketOffice Ticket;
+    // Add ticket adress.
+    function Existing(address _t) public {
+        Ticket = TicketOffice(_t);
+    }
+    
+    function getTicketPrice() public view returns (uint result) {
+        return Ticket.ticketPrice();
+    }
+    
+    function setTicketPrice(uint _val) public onlyOwner returns (uint) {
+        Ticket.setTicketPrice(_val);
+    }
 
 }
 

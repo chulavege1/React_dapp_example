@@ -1,19 +1,27 @@
 const { assert } = require('chai')
 const Web3 = require('web3')
 
-const TicketFactory = artifacts.require('./TicketFactory.sol')
+const Ganache = require('./helpers/ganache');
+const { expectEvent, expectRevert, constants } = require("@openzeppelin/test-helpers");
 
+const TicketFactory = artifacts.require('./TicketFactory.sol');
+const TicketOffice = artifacts.require('./TicketOffice');
 
 require('chai').use(require('chai-as-promised')).should()
 
 contract("TicketFactory", (accounts) => {
+  const ganache = new Ganache(web3);
+  afterEach('revert', ganache.revert);
+
   const owner = accounts[0]
   const visitor1 = accounts[1]
 
-  let contract
+  let Factory
+  let Office
 
-  beforeEach('should setup the contract instance', async () => {
-    contract = await TicketFactory.deployed()
+  beforeEach('should setup the Factory instance', async () => {
+    Factory = await TicketFactory.deployed(),
+    Office = await TicketOffice.new(owner, owner, 'name', 'symnbol', '5', '999', '0')
   });
 
   describe('Check owner usage rights', async () => {
@@ -28,52 +36,61 @@ contract("TicketFactory", (accounts) => {
     const maxTickets = '999'
 
     it('Owner can create events', async () => {
-      await contract.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
+      await Factory.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
         ticketPrice, futureUnixDate, eventDuration, maxTickets, {
           from: owner,
         } )
-      const newEvent = await contract.eventsList(0)
+      const newEvent = await Factory.eventsList(0)
       assert.equal(eventName, newEvent.eventName, `New event correct`) 
     })
 
     it('If Unix Date(2021year) & Ticket start(2007) - owner cant create event', async () => {
-      try {
-        await contract.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
+      await expectRevert(
+        Factory.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
           ticketPrice, oldUnixDate, eventDuration, maxTickets, {
             from: owner,
-          } )
-      } catch (e) {
-        assert.equal(e, e)
-      }
+          }),
+          'Must EventDuration < 0 && StartAt > unixData'
+      )
     })
 
     it('Owner can add member', async () => {
-      await contract.changeOwner(visitor1)
+      await Factory.changeOwner(visitor1)
     })
 
     it('Owner cant add member undefined users', async () => {
-      try {
-        await contract.changeOwner(accounts[10])
-      } catch (e) {
-        assert.equal(e, e)
-      }
+      await expectRevert (
+        Factory.changeOwner(accounts[10]),
+        'undefined'
+      )
     })
+
+    it('Owner can change price token', async () => {
+      await Factory.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
+        ticketPrice, futureUnixDate, eventDuration, maxTickets, {
+          from: owner
+        } )
+      const getTokenHash = await Factory.ticketOffices(0)
+      await Factory.Existing(getTokenHash)
+      await Factory.setTicketPrice('3', {from: owner})
+      const getTicketPrice = await Factory.getTicketPrice()
+      assert.equal(getTicketPrice, '3')
+    } )
 
     describe('User usage', async () => {
 
       it('Not owner can`t create event', async () => {
-        try {
-          await contract.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
-            ticketPrice, futureUnixDate, eventDuration, maxTickets, {
-            from: visitor1
-          })
-        } catch (e) {
-          assert.equal(e, e)
-        }
+          await expectRevert (
+            Factory.addEvent(eventName, eventDescription, eventPosterURI, ticketSymbol,
+              ticketPrice, futureUnixDate, eventDuration, maxTickets, {
+              from: visitor1
+            }),
+            'Owner only'
+          ) 
       })
 
       it('User can see token', async () => {
-        const event = await contract.eventsList(0, {
+        const event = await Factory.eventsList(0, {
           from: visitor1
         })
         assert.equal(eventName, event.eventName, `Event name visible for the people.`)
@@ -85,22 +102,22 @@ contract("TicketFactory", (accounts) => {
 
   // describe('Token price', async () => {
   //   it('Token has price', async () => {
-  //     const price = await contract.tokenPrice({from: visitor1})
+  //     const price = await Factory.tokenPrice({from: visitor1})
   //     assert.equal('1', Web3.utils.fromWei(price, 'ether'))
   //   })
 
   //   it('Owner can change token price', async () => {
-  //     await contract.setTokenPrice(Web3.utils.toWei('1', 'finney'))
-  //     let price = await contract.tokenPrice()
+  //     await Factory.setTokenPrice(Web3.utils.toWei('1', 'finney'))
+  //     let price = await Factory.tokenPrice()
   //     assert.equal('1', Web3.utils.fromWei(price, 'finney'))
-  //     await contract.setTokenPrice(Web3.utils.toWei('1', 'ether'))
-  //     price = await contract.tokenPrice()
+  //     await Factory.setTokenPrice(Web3.utils.toWei('1', 'ether'))
+  //     price = await Factory.tokenPrice()
   //     assert.equal('1', Web3.utils.fromWei(price, 'ether'))
   //   })
 
   //   it('Not owner can`t change price', async () => {
   //     try {
-  //       await contract.setTokenPrice(Web3.utils.toWei('1', 'finney'), {
+  //       await Factory.setTokenPrice(Web3.utils.toWei('1', 'finney'), {
   //         from: visitor1
   //       })
   //     } catch (e) {
@@ -111,17 +128,17 @@ contract("TicketFactory", (accounts) => {
 
   // describe('Minting tokens', async () => {
   //   it('Can mint new token for 1 ether', async () => {
-  //     await contract.mint(0, {
+  //     await Factory.mint(0, {
   //       from: visitor1,
   //       value: Web3.utils.toWei('1', 'ether')
   //     })
-  //     const balance = await contract.balanceOf(visitor1)
+  //     const balance = await Factory.balanceOf(visitor1)
   //     assert.equal(parseInt(balance), 1)
   //   })
 
   //   it('Buyer need to have enough ether to buy ticker', async () => {
   //     try {
-  //       await contract.mint(0, {
+  //       await Factory.mint(0, {
   //         from: visitor1,
   //         value: Web3.utils.toWei('1', 'finney')
   //       })
