@@ -69,7 +69,11 @@ contract TicketOffice is ERC721 {
         _;
     }
 
+<<<<<<< HEAD
     function setTicketPrice (uint _newPrice) public onlyFactory {
+=======
+    function setTicketPrice (uint _newPrice) public onlyOwner {
+>>>>>>> 1a4c3a6e0ae50cd4d31842a5c0cffa0c290578ea
         ticketPrice = _newPrice;
     }
 
